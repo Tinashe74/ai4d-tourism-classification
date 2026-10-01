@@ -1,0 +1,37 @@
+Experiment,Features,Model,CV Log Loss,Calibration,Blend Weight,Public Score,Decision
+geo_frequency,engineered plus geo plus frequency,LightGBM 5-fold,1.062399148,none,100% frequency,,keep as component
+frequency_temperature,engineered plus geo plus frequency,LightGBM 5-fold,1.062389735,OOF temperature 1.00508,100% frequency,,keep calibration
+onehot_frequency_blend,engineered one-hot plus geo-frequency,LightGBM OOF ensemble,1.058296133,none,45% one-hot / 55% frequency,,strong improvement
+optimized_two_model,engineered one-hot plus geo-frequency,OOF ensemble,1.058274940,OOF temperature 0.992375,44.98% one-hot / 55.02% frequency,,candidate
+interaction_lgbm,engineered interactions plus geo,LightGBM 5-fold,1.062775762,none,100% interaction,,reject as standalone
+optimized_three_model,optimized plus interaction features,OOF ensemble,1.057872945,OOF temperature 0.991985,38.28% one-hot / 38.70% frequency / 23.03% interaction,,best validated candidate
+reference_preprocess,reference missing-value treatment plus geo,LightGBM 5-fold,1.063979784,none,100% reference,,reject
+current_public_best,historical geo seed blend plus calibrated frequency,submission blend,,none,0.25% frequency,1.060810271,protected
+freq_blend_005,historical geo seed blend plus calibrated frequency,submission blend,,none,0.5% frequency,,do not recommend without exact base OOF
+refined_three_model,existing three saved OOF models,constrained simplex plus temperature,1.057872945,OOF temperature 0.991985,38.698% frequency / 38.276% one-hot / 23.026% interaction,,no meaningful improvement
+extra_trees,engineered one-hot,ExtraTrees 350 trees,incomplete; folds 1-2 were 1.176587 and 1.262027,none,100% ExtraTrees,,reject and stopped
+catboost_native,raw competition features,native categorical CatBoost 5-fold,1.096757365,none,100% CatBoost,,reject standalone but retain diversity
+catboost_ensemble,three LightGBM OOF models plus native CatBoost,constrained OOF ensemble,1.057118518,OOF temperature 0.968521,33.919% geo-frequency / 33.768% one-hot / 19.679% interaction / 12.633% CatBoost,,best validated candidate
+joint_frequency,geo plus joint categorical frequencies,LightGBM 5-fold,1.062035507,none,100% joint-frequency,,retain as complementary component
+next_best_five_model,three LightGBM plus CatBoost plus joint-frequency,constrained OOF ensemble,1.056771078,OOF temperature 0.968503,7.588% geo-frequency / 34.298% one-hot / 12.489% interaction / 12.389% CatBoost / 33.236% joint-frequency,,recommend candidate
+joint_frequency_seed2024,joint-frequency features,LightGBM 5-fold seed 2024,1.062416637,none,100% joint-frequency,,retain for diversity; weaker standalone
+onehot_seed2024,engineered one-hot,LightGBM 5-fold seed 2024,1.067154059,none,100% one-hot,,reject standalone and zero ensemble weight
+seed_augmented_ensemble,current five models plus joint-frequency seed 2024,constrained OOF ensemble,1.055917861,OOF temperature 0.968033,5.926% geo / 26.166% one-hot / 13.825% interaction / 10.849% CatBoost / 15.471% joint / 27.763% joint seed 2024,,best candidate
+joint_frequency_seed3407,joint-frequency features,LightGBM 5-fold seed 3407,1.061990553,none,100% joint-frequency,,retain for diversity
+seed3407_ensemble,current ensemble plus joint-frequency seed 3407,constrained OOF ensemble,1.055360669,OOF temperature 0.969316,4.133% geo / 22.178% one-hot / 15.004% interaction / 10.449% CatBoost / 6.783% joint 2026 / 17.344% joint 2024 / 24.110% joint 3407,,new candidate
+logit_blend,current seven-model OOF set,logit-space ensemble,1.055523597,logit temperature 0.978214,,reject; worse than probability blending
+class_temperature,current seven-model ensemble,per-class OOF temperature,1.055138438,class temperatures [0.961,0.940,0.988,0.985,0.966,0.955],,not promoted; cross-fitted gain only 0.000100
+leaveout_analysis,current seven-model ensemble,leave-one-model-out constrained blends,see report,global temperature,,one-hot/CatBoost/joint3407 provide strongest support
+final_attack_ordinal_4seed,existing champion features plus ordinal cumulative probabilities,"LightGBM ordinal decomposition, 4 seeds",1.053793048,none,20% ordinal / 80% champion,,validated candidate; do not submit automatically
+residual_attack_4seed,original features plus OOF champion probabilities and uncertainty,cross-fitted LightGBM correction,1.054375428,none,1% to 20%; rejected at every tested weight,,reject: worsened champion; no candidate created
+prediction_space_pairwise,existing OOF sources,class_specialist + duration_signal; champion 92.5% / 5% / 2.5%,1.054278748,none,92.5/5/2.5,,"reject: improvement 0.000076, below gate and no multi-seed support"
+prediction_space_uncertainty_gate,existing OOF sources plus entropy/margin gate,class_specialist gated by prediction uncertainty,1.054343431,none,7.5% gated; 10% specialist,,"reject: improvement 0.000012, below gate"
+hidden_structure_semantic_features,duration/composition/package/geography interactions and safe ratios,LightGBM 5-fold seed 2026,1.054369869,none,1% best blend,,reject: no OOF improvement; no candidate created
+validation_alignment_subgroup_correction,stable subgroup empirical correction cross-fitted over 4 seeds and 5 folds,prior-smoothed subgroup probability correction,1.054444138,none,0.5%,,reject: best correction worsened champion by 0.000089; only 50% folds better; no candidate created
+class_direction_attack,OOF champion probabilities plus cross-fitted Highest/Low error detectors,conditional class-pair mass transfer,1.054288,none,0.5%,,reject: four-seed mean improvement 0.000067; below gate despite stable Highest detector; no candidate created
+residual_transition_analysis,exact champion OOF residual and transition decomposition plus existing 4-seed residual predictions,descriptive residual audit and prior cross-fitted residual blend,1.054375428,none,0.25%-20%,,reject: prior four-seed residual correction worsened champion; no candidate created
+representation_diversity_inventory,direct smoothed conditional probability models and existing OOF source inventory,5-fold target-independent conditional distributions,1.054470,none,0.5%,,reject: best new representation worsened champion by 0.000115; no candidate created
+probability_regime_attack,champion probability entropy/confidence/margin regimes plus cross-fitted temperature and consensus-weight curves,leakage-safe calibration audit across 4 seeds and 5 folds,1.054354976,temperature=1.0 and consensus weight=0.30,0%,,reject: no positive robust improvement; broad curves centered on protected champion; no candidate created
+targeted_logistic_complement,regularized one-hot categorical plus scaled numeric multinomial logistic regression,5-fold stratified seed 2026,1.124829147,none,5%,,reject: best blend worsened champion by 0.000030; stopped before additional seeds; no candidate created
+latent_cost_signal,feature-only duration/package/travel-intensity score converted to fold-local six-class auxiliary probabilities,5-fold stratified seed 2026,1.640864851,none,0.5%,,reject: best adjustment worsened champion by 0.000316; no candidate created
+validation_alignment_audit,OOF champion subgroup/disagreement audit,no replacement model,1.0543549762238702,none,n/a,,audit complete; no candidate created
